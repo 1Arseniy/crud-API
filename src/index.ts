@@ -8,9 +8,10 @@ import { getClientData } from './utils/getClientData';
 
 let users: TypeUsers = [];
 
-const server = http.createServer(async (request, response) => {
+export const server = http.createServer(async (request, response) => {
   if (request.method === 'GET' && request.url === '/api/users') {
     response.statusCode = 200;
+    response.setHeader('Content-Type', 'application/json');
     response.write(JSON.stringify(users));
     response.end();
   } else if (
@@ -30,10 +31,12 @@ const server = http.createServer(async (request, response) => {
 
     if (!user) {
       response.statusCode = 404;
+      response.setHeader('Content-Type', 'application/json');
       response.write(JSON.stringify({ message: 'User not Found' }));
       response.end();
     } else {
       response.statusCode = 200;
+      response.setHeader('Content-Type', 'application/json');
       response.write(JSON.stringify(user));
       response.end();
     }
@@ -59,6 +62,7 @@ const server = http.createServer(async (request, response) => {
 
         users.push(user);
         response.statusCode = 201;
+        response.setHeader('Content-Type', 'application/json');
         response.write(JSON.stringify(user));
         response.end();
       }
@@ -79,6 +83,7 @@ const server = http.createServer(async (request, response) => {
 
       if (!checkUUID(userId)) {
         response.statusCode = 400;
+        response.setHeader('Content-Type', 'application/json');
         response.write(JSON.stringify({ message: 'Invalid UUID' }));
         response.end();
         return;
@@ -95,6 +100,7 @@ const server = http.createServer(async (request, response) => {
         user.hobbies = data.hobbies;
         user.username = data.username;
         response.statusCode = 200;
+        response.setHeader('Content-Type', 'application/json');
 
         response.write(JSON.stringify(user));
         response.end();
@@ -114,6 +120,7 @@ const server = http.createServer(async (request, response) => {
 
     if (!checkUUID(userId)) {
       response.statusCode = 400;
+      response.setHeader('Content-Type', 'application/json');
       response.write(JSON.stringify({ message: 'Invalid UUID' }));
       response.end();
       return;
@@ -121,6 +128,7 @@ const server = http.createServer(async (request, response) => {
     const userForDelete = users.find((user) => user.id === userId);
     if (!userForDelete) {
       response.statusCode = 404;
+      response.setHeader('Content-Type', 'application/json');
       response.write(JSON.stringify({ message: 'User not Found' }));
       response.end();
     } else {
@@ -132,7 +140,7 @@ const server = http.createServer(async (request, response) => {
     response.statusCode = 404;
     response.write(
       JSON.stringify({
-        message: 'Такой конечной точки нет',
+        message: 'Endpoint not found',
       }),
     );
     response.end();
