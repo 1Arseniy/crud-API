@@ -2,20 +2,10 @@
   "compilerOptions": {
     "target": "esnext",
     "useDefineForClassFields": true,
-    "module": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    // "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    // "types": ["node"],
-    // "skipLibCheck": true,
-
-    /* Bundler mode */
-    // "allowImportingTsExtensions": true,
-    // "verbatimModuleSyntax": true,
-    // "moduleDetection": "force",
-    // "noEmit": true,
-
-    /* Linting */
+    "outDir": "./dist",
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
