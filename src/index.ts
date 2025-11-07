@@ -1,5 +1,7 @@
 import http from 'http';
+import process from 'process';
 import { v4 } from 'uuid';
+import 'dotenv/config';
 import { TypeUser, TypeUsers } from './types/types';
 import { checkUUID } from './utils/checkUUID';
 import { getClientData } from './utils/getClientData';
@@ -137,4 +139,4 @@ const server = http.createServer(async (request, response) => {
   }
 });
 
-server.listen(3000);
+server.listen(process.env.PORT);
