@@ -5,6 +5,7 @@
   "scripts": {
     "start:dev": "ts-node-dev --loader ts-node/esm src/index.ts",
     "start:prod": "tsc && cross-env PORT=4000 node dist/index.js",
+    "build": "tsc",
     "test": "vitest"
   },
   "devDependencies": {
