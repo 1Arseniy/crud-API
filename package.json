@@ -1,0 +1,27 @@
+{
+  "name": "crud-ap",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "start:dev": "ts-node-dev --loader ts-node/esm src/index.ts",
+    "start:prod": "tsc && cross-env PORT=4000 node dist/index.js",
+    "start:multi": "ts-node-dev --loader ts-node/esm src/startCluster.ts multi",
+    "build": "tsc",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "@types/supertest": "^6.0.3",
+    "cross-env": "^10.1.0",
+    "supertest": "^7.1.4",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.1.7",
+    "vitest": "^4.0.8"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "uuid": "^13.0.0"
+  }
+}
