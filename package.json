@@ -5,7 +5,7 @@
   "scripts": {
     "start:dev": "ts-node-dev --loader ts-node/esm src/index.ts",
     "start:prod": "tsc && cross-env PORT=4000 node dist/index.js",
-    "start:multi": "ts-node-dev --loader ts-node/esm src/startCluster.ts",
+    "start:multi": "ts-node-dev --loader ts-node/esm src/startCluster.ts multi",
     "build": "tsc",
     "test": "vitest"
   },

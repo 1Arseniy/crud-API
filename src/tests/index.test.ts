@@ -1,8 +1,9 @@
 import { expect, describe, it } from 'vitest';
 import request from 'supertest';
-import { server } from '../index';
+import { createServer } from '../index';
 
 describe('server tests', () => {
+  const server = createServer(2000);
   const user = {
     username: 'alex_koval',
     age: 30,

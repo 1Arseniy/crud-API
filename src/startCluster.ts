@@ -17,15 +17,11 @@ function startCluster() {
       const newPort = port + i + 1;
       workers.push(newPort);
       cluster.fork({ PORT: newPort });
-
-      // console.log(worker);
-      // worker.send(newPort);
     }
 
     const balanceWorker = http.createServer((req, res) => {
       const server = workers[start];
       start = (start + 1) % workers.length;
-      console.log('!!!!!');
 
       const proxy = http.request(
         {
@@ -43,7 +39,6 @@ function startCluster() {
 
       proxy.on('error', (err) => {
         console.log(`Error ${err.message}`);
-        // req.statusCode = 500;
         res.end();
       });
 

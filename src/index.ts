@@ -9,82 +9,21 @@ import { getClientData } from './utils/getClientData';
 export let users: TypeUsers = [];
 
 export function createServer(port: number) {
-  const server = http.createServer(async (request, response) => {
-    if (request.method === 'GET' && request.url === '/api/users') {
-      response.statusCode = 200;
-      response.setHeader('Content-Type', 'application/json');
-      response.write(JSON.stringify(users));
-      response.end();
-    } else if (
-      request.method === 'GET' &&
-      request.url?.startsWith('/api/users/')
-    ) {
-      const userId = request.url.split('/')[3];
-
-      if (!checkUUID(userId)) {
-        response.statusCode = 400;
-        response.write(JSON.stringify({ message: 'Invalid UUID' }));
-        response.end();
-        return;
-      }
-
-      const user = users.find((user) => user.id === userId);
-
-      if (!user) {
-        response.statusCode = 404;
-        response.setHeader('Content-Type', 'application/json');
-        response.write(JSON.stringify({ message: 'User not Found' }));
-        response.end();
-      } else {
+  return http
+    .createServer(async (request, response) => {
+      if (request.method === 'GET' && request.url === '/api/users') {
         response.statusCode = 200;
         response.setHeader('Content-Type', 'application/json');
-        response.write(JSON.stringify(user));
+        response.write(JSON.stringify(users));
         response.end();
-      }
-    } else if (request.method === 'POST' && request.url === '/api/users') {
-      try {
-        const data: TypeUser = await getClientData(request);
-
-        if (!data.username || !data.age || !data.hobbies) {
-          response.statusCode = 400;
-          response.write(
-            JSON.stringify({
-              message: 'Error missing required fields: username, age, hobbies',
-            }),
-          );
-          response.end();
-        } else {
-          const user: TypeUser = {
-            id: v4(),
-            username: data.username,
-            age: data.age,
-            hobbies: data.hobbies,
-          };
-
-          users.push(user);
-          response.statusCode = 201;
-          response.setHeader('Content-Type', 'application/json');
-          response.write(JSON.stringify(user));
-          response.end();
-        }
-      } catch (err) {
-        if (err instanceof Error) {
-          response.statusCode = 500;
-          response.write(JSON.stringify({ message: err.message }));
-          response.end();
-        }
-      }
-    } else if (
-      request.method === 'PUT' &&
-      request.url?.startsWith('/api/users/')
-    ) {
-      try {
-        const data: TypeUser = await getClientData(request);
+      } else if (
+        request.method === 'GET' &&
+        request.url?.startsWith('/api/users/')
+      ) {
         const userId = request.url.split('/')[3];
 
         if (!checkUUID(userId)) {
           response.statusCode = 400;
-          response.setHeader('Content-Type', 'application/json');
           response.write(JSON.stringify({ message: 'Invalid UUID' }));
           response.end();
           return;
@@ -94,66 +33,127 @@ export function createServer(port: number) {
 
         if (!user) {
           response.statusCode = 404;
+          response.setHeader('Content-Type', 'application/json');
           response.write(JSON.stringify({ message: 'User not Found' }));
           response.end();
         } else {
-          user.age = data.age;
-          user.hobbies = data.hobbies;
-          user.username = data.username;
           response.statusCode = 200;
           response.setHeader('Content-Type', 'application/json');
-
           response.write(JSON.stringify(user));
           response.end();
         }
-      } catch (err) {
-        if (err instanceof Error) {
-          response.statusCode = 500;
-          response.write(JSON.stringify({ message: err.message }));
+      } else if (request.method === 'POST' && request.url === '/api/users') {
+        try {
+          const data: TypeUser = await getClientData(request);
+
+          if (!data.username || !data.age || !data.hobbies) {
+            response.statusCode = 400;
+            response.write(
+              JSON.stringify({
+                message:
+                  'Error missing required fields: username, age, hobbies',
+              }),
+            );
+            response.end();
+          } else {
+            const user: TypeUser = {
+              id: v4(),
+              username: data.username,
+              age: data.age,
+              hobbies: data.hobbies,
+            };
+
+            users.push(user);
+            response.statusCode = 201;
+            response.setHeader('Content-Type', 'application/json');
+            response.write(JSON.stringify(user));
+            response.end();
+          }
+        } catch (err) {
+          if (err instanceof Error) {
+            response.statusCode = 500;
+            response.write(JSON.stringify({ message: err.message }));
+            response.end();
+          }
+        }
+      } else if (
+        request.method === 'PUT' &&
+        request.url?.startsWith('/api/users/')
+      ) {
+        try {
+          const data: TypeUser = await getClientData(request);
+          const userId = request.url.split('/')[3];
+
+          if (!checkUUID(userId)) {
+            response.statusCode = 400;
+            response.setHeader('Content-Type', 'application/json');
+            response.write(JSON.stringify({ message: 'Invalid UUID' }));
+            response.end();
+            return;
+          }
+
+          const user = users.find((user) => user.id === userId);
+
+          if (!user) {
+            response.statusCode = 404;
+            response.write(JSON.stringify({ message: 'User not Found' }));
+            response.end();
+          } else {
+            user.age = data.age;
+            user.hobbies = data.hobbies;
+            user.username = data.username;
+            response.statusCode = 200;
+            response.setHeader('Content-Type', 'application/json');
+
+            response.write(JSON.stringify(user));
+            response.end();
+          }
+        } catch (err) {
+          if (err instanceof Error) {
+            response.statusCode = 500;
+            response.write(JSON.stringify({ message: err.message }));
+            response.end();
+          }
+        }
+      } else if (
+        request.method === 'DELETE' &&
+        request.url?.startsWith('/api/users/')
+      ) {
+        const userId = request.url.split('/')[3];
+
+        if (!checkUUID(userId)) {
+          response.statusCode = 400;
+          response.setHeader('Content-Type', 'application/json');
+          response.write(JSON.stringify({ message: 'Invalid UUID' }));
+          response.end();
+          return;
+        }
+        const userForDelete = users.find((user) => user.id === userId);
+        if (!userForDelete) {
+          response.statusCode = 404;
+          response.setHeader('Content-Type', 'application/json');
+          response.write(JSON.stringify({ message: 'User not Found' }));
+          response.end();
+        } else {
+          users = users.filter((user) => user.id !== userForDelete.id);
+          response.statusCode = 204;
           response.end();
         }
-      }
-    } else if (
-      request.method === 'DELETE' &&
-      request.url?.startsWith('/api/users/')
-    ) {
-      const userId = request.url.split('/')[3];
-
-      if (!checkUUID(userId)) {
-        response.statusCode = 400;
-        response.setHeader('Content-Type', 'application/json');
-        response.write(JSON.stringify({ message: 'Invalid UUID' }));
-        response.end();
-        return;
-      }
-      const userForDelete = users.find((user) => user.id === userId);
-      if (!userForDelete) {
-        response.statusCode = 404;
-        response.setHeader('Content-Type', 'application/json');
-        response.write(JSON.stringify({ message: 'User not Found' }));
-        response.end();
       } else {
-        users = users.filter((user) => user.id !== userForDelete.id);
-        response.statusCode = 204;
+        response.statusCode = 404;
+        response.write(
+          JSON.stringify({
+            message: 'Endpoint not found',
+          }),
+        );
         response.end();
       }
-    } else {
-      response.statusCode = 404;
-      response.write(
-        JSON.stringify({
-          message: 'Endpoint not found',
-        }),
-      );
-      response.end();
-    }
-  });
-
-  server.listen(port, () => {
-    console.log(`server start - ${port}`);
-  });
+    })
+    .listen(port, () => {
+      console.log(`server start - ${port}`);
+    });
 }
 
-// if (process.env.arg)
-console.log(process.argv);
-
-// createServer(Number(process.env.PORT));
+if (!process.argv.includes('multi')) {
+  createServer(Number(process.env.PORT));
+}
